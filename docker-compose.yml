@@ -1,0 +1,42 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: exam_practice_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: exam_practice_backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/exam_practice_db
+      JWT_SECRET: ${JWT_SECRET:-remplacer_par_un_secret_aleatoire_de_32_caracteres_minimum}
+      CORS_ORIGIN: http://localhost:3000
+      NODE_ENV: production
+      LOG_LEVEL: info
+    depends_on:
+      - mongodb
+    volumes:
+      - backend_logs:/app/logs
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        REACT_APP_API_URL: http://localhost:5000/api
+    container_name: exam_practice_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongodb_data:
+  backend_logs:
