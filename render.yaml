@@ -23,7 +23,6 @@ services:
     name: exam-practice-app
     runtime: static
     rootDir: frontend
-    plan: free
     buildCommand: npm install && npm run build
     staticPublishPath: ./build
     envVars:
