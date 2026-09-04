@@ -14,6 +14,7 @@ Le format est inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0
 - **Erreurs de connexion silencieuses** : messages d'erreur visibles dans `Login.js` (validation + réponse API).
 - **Erreurs d'inscription silencieuses** : messages d'erreur visibles dans `Register.js`.
 - **Formulaires vides acceptés** : validation côté client (Login, Register, TaskForm) et côté serveur (`POST /api/tasks`).
+- **Accès à l'inscription** : lien « Inscription » ajouté dans le Header et bouton sur la page Login.
 
 ### Sécurité — Failles corrigées (E28)
 
@@ -27,21 +28,30 @@ Le format est inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0
 - JSDoc ajoutée sur la route `POST /api/tasks` (`backend/routes/tasks.js`).
 - Documentation JSDoc ajoutée sur le composant `TaskForm` (`frontend/src/components/TaskForm.js`).
 - Création de ce fichier `CHANGELOG.md`.
+- `README.md` réécrit (URLs, installation, compétences E21–E29, structure du projet).
+- `rapport.md` — synthèse complète pour le rendu (E21–E29).
+- `DEPLOY.md` — guide pas à pas Render + MongoDB Atlas.
 
 ### Infrastructure — Déploiement, CI/CD, Monitoring (E21–E26)
 
 - **Docker** : `Dockerfile` backend + frontend (multi-stage Nginx), `docker-compose.yml` complet (MongoDB + backend + frontend).
 - **CI/CD** : script `deploy.sh` + pipeline GitHub Actions (`.github/workflows/ci.yml`).
 - **Logging** : Winston remplace `console.log` — fichiers `logs/combined.log` et `logs/error.log`.
-- **Monitoring** : endpoint `GET /api/health` pour sondes (Uptime Kuma, Prometheus).
-- **Architecture cloud** : schéma Scaleway documenté dans le README.
-- **Déploiement Render** : `render.yaml` + guide `DEPLOY.md` (Render + MongoDB Atlas).
+- **Monitoring** : endpoint `GET /api/health` + health check Render (`healthCheckPath` dans `render.yaml`).
+- **Hébergement cloud** : Render (frontend + backend) + MongoDB Atlas — déploiement validé en production.
+- **Déploiement Render** : `render.yaml` corrigé (`runtime: static`, `staticPublishPath`, `healthCheckPath`) + `frontend/public/_redirects` pour le routing SPA.
+- **Configuration** : `frontend/.env.example` et `backend/.env.example` documentés.
+
+**URLs production :**
+- Frontend : https://exam-practice-app-lh5m.onrender.com
+- Backend : https://exam-practice-api-qigd.onrender.com
+- Health : https://exam-practice-api-qigd.onrender.com/api/health
 
 ### Dépendances
 
-- `npm audit` exécuté : 7 vulnérabilités détectées (express, mongoose, jws, qs, body-parser, path-to-regexp, ip-address).
-- Mise à jour recommandée : `npm install express@latest mongoose@latest jsonwebtoken@latest`.
-- `npm audit fix` : timeout réseau sur l'endpoint sécurité npm (correction manuelle possible).
+- `npm audit` exécuté sur le backend : 7 vulnérabilités détectées (express, mongoose, jws, qs, body-parser, path-to-regexp, ip-address).
+- `npm audit fix` (sans `--force`) : réduit à 3 vulnérabilités modérées restantes.
+- `npm audit` frontend : erreurs réseau (503/timeout) côté serveur npm — non bloquant.
 
 ---
 
